@@ -1,0 +1,116 @@
+:root {
+  /* =========================
+     FIXIT PRIMARY COLORS
+     ========================= */
+
+  --color-primary: #00d0d0;
+  --color-primary-dark: #00aaaa;
+  --color-primary-light: #5ce7e7;
+
+  /* =========================
+     TEXT
+     ========================= */
+
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-text-muted: #7a858c;
+
+  /* =========================
+     BACKGROUNDS
+     ========================= */
+
+  --color-background: #f0f3f5;
+  --color-white: #ffffff;
+
+  /* =========================
+     TRUST / TECHNOLOGY
+     ========================= */
+
+  --color-slate: #4a6b7c;
+  --color-navy: #1b263b;
+  --color-dark-slate: #2f4f4f;
+
+  /* =========================
+     URGENT CTA ONLY
+     ========================= */
+
+  --color-orange: #ff6600;
+
+  /* =========================
+     STATUS COLORS
+     ========================= */
+
+  --color-success: #198754;
+  --color-warning: #f0ad00;
+  --color-danger: #dc3545;
+  --color-info: #168aad;
+
+  /* =========================
+     BORDERS
+     ========================= */
+
+  --color-border: #dce3e7;
+  --color-border-light: #e9eef1;
+
+  /* =========================
+     TYPOGRAPHY
+     ========================= */
+
+  --font-primary:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --font-heading:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  /* =========================
+     SIZES
+     ========================= */
+
+  --container-width: 1200px;
+
+  --navbar-height: 76px;
+
+  --radius-small: 8px;
+  --radius-medium: 14px;
+  --radius-large: 22px;
+  --radius-pill: 999px;
+
+  /* =========================
+     SHADOWS
+     ========================= */
+
+  --shadow-small:
+    0 3px 12px rgba(27, 38, 59, 0.08);
+
+  --shadow-medium:
+    0 8px 30px rgba(27, 38, 59, 0.1);
+
+  --shadow-large:
+    0 18px 50px rgba(27, 38, 59, 0.14);
+
+  /* =========================
+     TRANSITIONS
+     ========================= */
+
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* =========================
+     Z INDEX
+     ========================= */
+
+  --z-navbar: 1000;
+  --z-modal: 2000;
+  --z-loader: 3000;
+}
