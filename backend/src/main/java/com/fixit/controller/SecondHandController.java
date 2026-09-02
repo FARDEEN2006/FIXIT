@@ -128,10 +128,15 @@ public class SecondHandController {
     public ResponseEntity<ApiResponse<SecondHandImageResponse>> addListingImage(
             @PathVariable String id,
             @RequestParam("image") MultipartFile imageFile,
-            @RequestParam(defaultValue = "false") boolean isThumbnail) {
+            @RequestParam(defaultValue = "false") boolean isThumbnail,
+            @RequestParam("verificationToken") String verificationToken) {
         try {
             logger.info("Adding image to listing: {}", id);
             
+            if (!listingService.isVerifiedUploadToken(id, verificationToken)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse<>(false, "A valid verified upload token is required", null));
+            }
             // Validate image
             imageCompressionUtil.validateImage(imageFile);
             

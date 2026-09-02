@@ -6,7 +6,7 @@ async function apiRequest(endpoint, options = {}) {
   const response = await fetch(url, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
       ...(options.headers || {}),
     },
   });
@@ -83,4 +83,38 @@ export async function getProductById(id) {
   const data = await apiRequest(`/products/${id}`);
   const product = data?.data || null;
   return product ? normalizeProduct(product) : null;
-}
+}
+
+export async function createProductEnquiry(values) {
+  return apiRequest("/product-enquiries", { method: "POST", body: JSON.stringify(values) });
+}
+
+export async function getServices() {
+  const response = await apiRequest("/services");
+  return response?.data?.services || [];
+}
+
+export async function getStoreInfo() {
+  const response = await apiRequest("/store-info");
+  return response?.data || null;
+}
+
+export async function requestListingVerification(values) {
+  return apiRequest("/sell/verify/request", { method: "POST", body: JSON.stringify(values) });
+}
+
+export async function confirmListingVerification(listingId, token) {
+  return apiRequest("/sell/verify/confirm", { method: "POST", body: JSON.stringify({ listingId, token }) });
+}
+
+export async function uploadListingImage(listingId, token, image, isThumbnail) {
+  const body = new FormData();
+  body.append("image", image);
+  body.append("isThumbnail", String(isThumbnail));
+  body.append("verificationToken", token);
+  return apiRequest(`/sell/listings/${listingId}/images`, { method: "POST", body });
+}
+
+export async function adminLogin(email, password) {
+  return apiRequest("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
+}

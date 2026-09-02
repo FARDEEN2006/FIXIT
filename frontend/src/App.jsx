@@ -8,6 +8,11 @@ import ScrollToTop from "./components/layout/ScrollToTop";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
+import SellYourMobile from "./pages/SellYourMobile";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import AdminLogin from "./pages/AdminLogin";
+import VerifyEmail from "./pages/VerifyEmail";
 
 function PlaceholderPage({ title }) {
   return (
@@ -75,36 +80,17 @@ function App() {
         />
 
         {/* SELL YOUR MOBILE */}
-        <Route
-          path="/sell-your-mobile"
-          element={
-            <PlaceholderPage title="Sell Your Mobile" />
-          }
-        />
+        <Route path="/sell-your-mobile" element={<SellYourMobile />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         {/* ABOUT */}
-        <Route
-          path="/about"
-          element={
-            <PlaceholderPage title="About FIXIT" />
-          }
-        />
+        <Route path="/about" element={<About />} />
 
         {/* CONTACT */}
-        <Route
-          path="/contact"
-          element={
-            <PlaceholderPage title="Contact FIXIT" />
-          }
-        />
+        <Route path="/contact" element={<Contact />} />
 
         {/* ADMIN LOGIN */}
-        <Route
-          path="/admin/login"
-          element={
-            <PlaceholderPage title="Admin Login" />
-          }
-        />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* ADMIN DASHBOARD */}
         <Route

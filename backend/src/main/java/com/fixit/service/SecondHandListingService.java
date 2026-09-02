@@ -130,7 +130,6 @@ public class SecondHandListingService {
         // Update listing - mark as verified
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("email_verified", true);
-        updateData.put("email_verification_token", null);
         updateData.put("email_verified_at", java.time.LocalDateTime.now());
         updateData.put("listing_status", "REVIEWING");
 
@@ -140,6 +139,17 @@ public class SecondHandListingService {
         }
 
         return false;
+    }
+
+    /** The email-link token is required for public upload access; listing UUID alone is never enough. */
+    public boolean isVerifiedUploadToken(String listingId, String token) {
+        if (token == null || token.isBlank()) return false;
+        Map<String, String> filters = new HashMap<>();
+        filters.put("id", "eq." + listingId);
+        List<Map<String, Object>> results = supabaseService.queryTable(LISTINGS_TABLE, filters);
+        if (results.isEmpty()) return false;
+        Map<String, Object> listing = results.get(0);
+        return Boolean.TRUE.equals(listing.get("email_verified")) && token.equals(listing.get("email_verification_token"));
     }
 
     /**

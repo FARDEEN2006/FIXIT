@@ -6,6 +6,7 @@ import {
   Send,
   User,
 } from "lucide-react";
+import { createProductEnquiry } from "../../services/api";
 
 function ProductEnquiryForm({ product }) {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ function ProductEnquiryForm({ product }) {
   });
 
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -27,7 +30,7 @@ function ProductEnquiryForm({ product }) {
     setError("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const name = formData.name.trim();
@@ -49,6 +52,14 @@ function ProductEnquiryForm({ product }) {
       return;
     }
 
+    setSubmitting(true);
+    try {
+      await createProductEnquiry({ productId: product.id, customerName: name, customerPhone: phone.replace(/[^0-9+]/g, ""), customerEmail: email });
+    } catch (requestError) {
+      setSubmitting(false);
+      setError(requestError.message || "We could not save your enquiry. Please try again.");
+      return;
+    }
     const message = [
       "Hello FIXIT Mobile Sales & Services,",
       "",
@@ -86,6 +97,8 @@ function ProductEnquiryForm({ product }) {
       "_blank",
       "noopener,noreferrer"
     );
+    setSuccess("Your enquiry has been saved. WhatsApp has opened in a new tab.");
+    setSubmitting(false);
   };
 
   return (
@@ -195,13 +208,14 @@ function ProductEnquiryForm({ product }) {
           {error}
         </p>
       )}
+      {success && <p className="fixit-form-success" role="status">{success}</p>}
 
       <button
         type="submit"
         className="fixit-button fixit-button-whatsapp"
       >
         <MessageCircle size={18} />
-        <span>Continue to WhatsApp</span>
+        <span>{submitting ? "Saving enquiry…" : "Continue to WhatsApp"}</span>
         <Send size={16} />
       </button>
 

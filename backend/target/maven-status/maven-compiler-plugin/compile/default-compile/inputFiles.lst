@@ -1,6 +1,7 @@
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\service\StoreService.java
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\service\EmailService.java
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\controller\HealthController.java
+C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\controller\AuthController.java
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\exception\GlobalExceptionHandler.java
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\util\ImageCompressionUtil.java
 C:\Users\mdfar\Desktop\FIXIT\backend\src\main\java\com\fixit\exception\ForbiddenException.java
