@@ -5,6 +5,7 @@ import com.fixit.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * Security Configuration
- * 
+ *
  * Configures:
  * - JWT authentication
  * - Admin route protection
@@ -44,12 +45,20 @@ public class SecurityConfig {
         http
             // Disable CSRF for stateless API
             .csrf(csrf -> csrf.disable())
-            
+
             // Stateless session management
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
+            )
+
             // Authorization rules
             .authorizeHttpRequests(authz -> authz
+
+                // Allow browser CORS preflight requests
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                 // Public endpoints
                 .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/api/auth/login").permitAll()
@@ -59,16 +68,19 @@ public class SecurityConfig {
                 .requestMatchers("/api/store-info").permitAll()
                 .requestMatchers("/api/product-enquiries").permitAll()
                 .requestMatchers("/api/sell/**").permitAll()
-                
+
                 // Admin endpoints - require authentication
                 .requestMatchers("/api/admin/**").authenticated()
-                
+
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
-            
+
             // Add JWT filter before UsernamePasswordAuthenticationFilter
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(
+                jwtAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }

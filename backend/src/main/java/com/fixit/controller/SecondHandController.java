@@ -3,8 +3,6 @@ package com.fixit.controller;
 import com.fixit.dto.SecondHandListingRequest;
 import com.fixit.dto.SecondHandListingResponse;
 import com.fixit.dto.SecondHandImageResponse;
-import com.fixit.dto.EmailVerificationRequest;
-import com.fixit.dto.EmailVerificationResponse;
 import com.fixit.dto.ApiResponse;
 import com.fixit.service.SecondHandListingService;
 import com.fixit.util.ImageCompressionUtil;
@@ -28,9 +26,7 @@ import java.util.Map;
  * Second-Hand Listing Controller
  * 
  * Handles second-hand marketplace endpoints:
- * - POST   /api/sell/verify/request          (public - create listing request)
- * - POST   /api/sell/verify/confirm          (public - verify email with token)
- * - POST   /api/sell/listings/{id}/images    (public - add images to listing)
+ * - POST   /api/sell/listings                (public - create private listing)
  * - GET    /api/admin/second-hand            (admin - list all listings)
  * - GET    /api/admin/second-hand/{id}       (admin - get listing details)
  * - PUT    /api/admin/second-hand/{id}/status (admin - update listing status)
@@ -50,22 +46,20 @@ public class SecondHandController {
     @Autowired
     private ImageCompressionUtil imageCompressionUtil;
 
-    /**
-     * Create second-hand listing request (Public)
-     * POST /api/sell/verify/request
-     * 
-     * Initiates listing process and sends verification email
-     */
-    @PostMapping("/sell/verify/request")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> createListingRequest(
-            @Valid @RequestBody SecondHandListingRequest request) {
+    /** Creates a private listing and accepts one required thumbnail plus up to three gallery images. */
+    @PostMapping(value = "/sell/listings", consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<SecondHandListingResponse>> createListing(
+            @RequestParam("sellerName") String sellerName, @RequestParam("sellerPhone") String sellerPhone,
+            @RequestParam(value = "sellerEmail", required = false) String sellerEmail, @RequestParam("productName") String productName,
+            @RequestParam("condition") String condition, @RequestParam("detailedDescription") String detailedDescription,
+            @RequestParam("expectedPrice") java.math.BigDecimal expectedPrice, @RequestParam("images") List<MultipartFile> images) {
         try {
-            logger.info("Creating second-hand listing request for: {}", request.getSellerEmail());
-            
-            Map<String, Object> result = listingService.createListingRequest(request);
-            
+            if (images.isEmpty() || images.size() > 4) throw new IllegalArgumentException("Provide between 1 and 4 images");
+            for (MultipartFile image : images) imageCompressionUtil.validateImage(image);
+            SecondHandListingRequest request = SecondHandListingRequest.builder().sellerName(sellerName).sellerPhone(sellerPhone).sellerEmail(sellerEmail).productName(productName).condition(condition).detailedDescription(detailedDescription).expectedPrice(expectedPrice).build();
+            SecondHandListingResponse result = listingService.createListing(request, images);
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "Verification email sent. Please check your email.", result));
+                .body(new ApiResponse<>(true, "Listing submitted successfully", result));
         } catch (IllegalArgumentException e) {
             logger.warn("Invalid listing data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -73,89 +67,7 @@ public class SecondHandController {
         } catch (Exception e) {
             logger.error("Error creating listing request: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error creating listing request", null));
-        }
-    }
-
-    /**
-     * Verify seller email (Public)
-     * POST /api/sell/verify/confirm
-     * 
-     * Verifies seller email using token from email link
-     */
-    @PostMapping("/sell/verify/confirm")
-    public ResponseEntity<ApiResponse<EmailVerificationResponse>> verifyEmail(
-            @Valid @RequestBody EmailVerificationRequest request) {
-        try {
-            logger.info("Verifying email for listing: {}", request.getListingId());
-            
-            boolean verified = listingService.verifySellerEmail(request.getListingId(), request.getToken());
-            
-            if (!verified) {
-                EmailVerificationResponse response = new EmailVerificationResponse();
-                response.setSuccess(false);
-                response.setMessage("Invalid or expired verification link");
-                response.setListingId(request.getListingId());
-                response.setNextStep(null);
-                
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(false, "Verification failed", response));
-            }
-            
-            EmailVerificationResponse response = new EmailVerificationResponse();
-            response.setSuccess(true);
-            response.setMessage("Email verified successfully");
-            response.setListingId(request.getListingId());
-            response.setNextStep("upload_images");
-            
-            return ResponseEntity.ok(
-                new ApiResponse<>(true, "Email verified successfully", response)
-            );
-        } catch (Exception e) {
-            logger.error("Error verifying email: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error verifying email", null));
-        }
-    }
-
-    /**
-     * Add image to listing (Public - during verification process)
-     * POST /api/sell/listings/{id}/images
-     * 
-     * Allows seller to add up to 4 images during listing creation
-     */
-    @PostMapping("/sell/listings/{id}/images")
-    public ResponseEntity<ApiResponse<SecondHandImageResponse>> addListingImage(
-            @PathVariable String id,
-            @RequestParam("image") MultipartFile imageFile,
-            @RequestParam(defaultValue = "false") boolean isThumbnail,
-            @RequestParam("verificationToken") String verificationToken) {
-        try {
-            logger.info("Adding image to listing: {}", id);
-            
-            if (!listingService.isVerifiedUploadToken(id, verificationToken)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse<>(false, "A valid verified upload token is required", null));
-            }
-            // Validate image
-            imageCompressionUtil.validateImage(imageFile);
-            
-            SecondHandImageResponse imageResponse = listingService.addImage(id, imageFile, isThumbnail);
-            
-            return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "Image added successfully", imageResponse));
-        } catch (IllegalArgumentException e) {
-            logger.warn("Invalid image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, e.getMessage(), null));
-        } catch (IOException e) {
-            logger.error("IO error uploading image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error processing image", null));
-        } catch (Exception e) {
-            logger.error("Error adding image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error adding image", null));
+                .body(new ApiResponse<>(false, "Error creating listing", null));
         }
     }
 

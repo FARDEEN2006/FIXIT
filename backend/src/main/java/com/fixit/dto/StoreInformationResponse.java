@@ -1,0 +1,2 @@
+package com.fixit.dto; import lombok.*; import java.time.LocalDateTime;
+@Data @NoArgsConstructor @AllArgsConstructor @Builder public class StoreInformationResponse { private String id,businessName,phoneNumber,whatsappNumber,email,address,city,state,pincode,workingHoursMonday,workingHoursSaturday,workingHoursSunday,aboutContent; private Double mapLat,mapLon; private LocalDateTime createdAt,updatedAt; }

@@ -1,0 +1,2 @@
+package com.fixit.dto; import lombok.*; import java.math.BigDecimal; import java.time.LocalDateTime; import java.util.List;
+@Data @NoArgsConstructor @AllArgsConstructor @Builder public class SecondHandListingResponse { private String id,sellerName,sellerPhone,sellerEmail,productName,condition,detailedDescription,listingStatus; private BigDecimal expectedPrice; private boolean emailVerified; private LocalDateTime emailVerifiedAt,createdAt,updatedAt; private List<SecondHandImageResponse> images; }

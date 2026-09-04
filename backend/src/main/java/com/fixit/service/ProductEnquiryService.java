@@ -27,14 +27,8 @@ public class ProductEnquiryService {
     @Autowired
     private SupabaseService supabaseService;
 
-    @Autowired
-    private EmailService emailService;
-
     @Value("${app.whatsapp-number}")
     private String businessWhatsappNumber;
-
-    @Value("${app.admin-email}")
-    private String adminEmail;
 
     private static final String ENQUIRIES_TABLE = "product_enquiries";
     private static final String PRODUCTS_TABLE = "products";
@@ -59,26 +53,16 @@ public class ProductEnquiryService {
         enquiryData.put("customer_name", request.getCustomerName());
         enquiryData.put("customer_phone", request.getCustomerPhone());
         enquiryData.put("customer_email", request.getCustomerEmail());
-        enquiryData.put("whatsapp_message", whatsappMessage);
-        enquiryData.put("enquiry_status", "NEW");
+        enquiryData.put("enquiry_status", "PENDING");
 
         Map<String, Object> result = supabaseService.insertRecord(ENQUIRIES_TABLE, enquiryData);
         
         if (result != null) {
             logger.info("Enquiry created successfully: {}", result.get("id"));
             
-            // Send notification to admin
-            try {
-                emailService.sendAdminNotificationForEnquiry(
-                    request.getCustomerName(),
-                    getProductName(request.getProductId()),
-                    request.getCustomerPhone()
-                );
-            } catch (Exception e) {
-                logger.error("Failed to send admin notification: {}", e.getMessage());
-            }
-
-            return mapToEnquiryResponse(result);
+            ProductEnquiryResponse response = mapToEnquiryResponse(result);
+            response.setWhatsappMessage(whatsappMessage);
+            return response;
         }
 
         throw new RuntimeException("Failed to create enquiry");

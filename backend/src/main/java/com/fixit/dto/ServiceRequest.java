@@ -1,0 +1,2 @@
+package com.fixit.dto; import jakarta.validation.constraints.*; import lombok.*;
+@Data @NoArgsConstructor @AllArgsConstructor @Builder public class ServiceRequest { @NotBlank(message="Service name is required") @Size(min=3,max=255) private String serviceName; @NotBlank(message="Description is required") @Size(min=10,max=1000) private String description; @Builder.Default private boolean isActive=true; @Builder.Default private int displayOrder=0; }

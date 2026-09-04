@@ -21,8 +21,18 @@ function Products() {
       try {
         setLoading(true);
         setError("");
+
         const data = await getProducts();
-        if (!cancelled) setProducts(data);
+
+        if (!cancelled) {
+          const activeProducts = Array.isArray(data)
+            ? data.filter(
+                (product) => product?.isActive === true
+              )
+            : [];
+
+          setProducts(activeProducts);
+        }
       } catch (err) {
         if (!cancelled) {
           setError(
@@ -43,15 +53,11 @@ function Products() {
 
   return (
     <main className="fixit-products-page">
-
       <ProductHero />
 
       <section className="section fixit-products-list-section">
-
         <div className="container">
-
           <div className="fixit-products-section-heading">
-
             <div>
               <span className="section-label">
                 SHOP
@@ -66,7 +72,6 @@ function Products() {
                 Mobile Sales & Services.
               </p>
             </div>
-
           </div>
 
           {loading ? (
@@ -74,7 +79,10 @@ function Products() {
               <LoadingSpinner size={32} />
             </div>
           ) : error ? (
-            <p className="fixit-form-error" role="alert">
+            <p
+              className="fixit-form-error"
+              role="alert"
+            >
               {error}
             </p>
           ) : (
@@ -83,11 +91,8 @@ function Products() {
               <ProductGrid products={products} />
             </>
           )}
-
         </div>
-
       </section>
-
     </main>
   );
 }

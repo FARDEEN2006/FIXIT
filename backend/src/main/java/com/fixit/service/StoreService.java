@@ -59,15 +59,16 @@ public class StoreService {
             // Create new store info
             Map<String, Object> storeData = new HashMap<>();
             storeData.put("business_name", request.getBusinessName());
-            storeData.put("phone", request.getPhone());
-            storeData.put("whatsapp", request.getWhatsapp());
+            storeData.put("phone_number", request.getPhoneNumber());
+            storeData.put("whatsapp_number", request.getWhatsappNumber());
             storeData.put("email", request.getEmail());
             storeData.put("address", request.getAddress());
             storeData.put("city", request.getCity());
             storeData.put("state", request.getState());
             storeData.put("pincode", request.getPincode());
-            storeData.put("working_hours_open", request.getWorkingHoursOpen());
-            storeData.put("working_hours_close", request.getWorkingHoursClose());
+            storeData.put("working_hours_monday_to_friday", request.getWorkingHoursMonday());
+            storeData.put("working_hours_saturday", request.getWorkingHoursSaturday());
+            storeData.put("working_hours_sunday", request.getWorkingHoursSunday());
             storeData.put("about_content", request.getAboutContent());
             storeData.put("map_lat", request.getMapLat());
             storeData.put("map_lon", request.getMapLon());
@@ -84,15 +85,16 @@ public class StoreService {
             
             Map<String, Object> updateData = new HashMap<>();
             updateData.put("business_name", request.getBusinessName());
-            updateData.put("phone", request.getPhone());
-            updateData.put("whatsapp", request.getWhatsapp());
+            updateData.put("phone_number", request.getPhoneNumber());
+            updateData.put("whatsapp_number", request.getWhatsappNumber());
             updateData.put("email", request.getEmail());
             updateData.put("address", request.getAddress());
             updateData.put("city", request.getCity());
             updateData.put("state", request.getState());
             updateData.put("pincode", request.getPincode());
-            updateData.put("working_hours_open", request.getWorkingHoursOpen());
-            updateData.put("working_hours_close", request.getWorkingHoursClose());
+            updateData.put("working_hours_monday_to_friday", request.getWorkingHoursMonday());
+            updateData.put("working_hours_saturday", request.getWorkingHoursSaturday());
+            updateData.put("working_hours_sunday", request.getWorkingHoursSunday());
             updateData.put("about_content", request.getAboutContent());
             updateData.put("map_lat", request.getMapLat());
             updateData.put("map_lon", request.getMapLon());
@@ -112,15 +114,16 @@ public class StoreService {
         return StoreInformationResponse.builder()
                 .id((String) row.get("id"))
                 .businessName((String) row.get("business_name"))
-                .phone((String) row.get("phone"))
-                .whatsapp((String) row.get("whatsapp"))
+                .phoneNumber((String) row.get("phone_number"))
+                .whatsappNumber((String) row.get("whatsapp_number"))
                 .email((String) row.get("email"))
                 .address((String) row.get("address"))
                 .city((String) row.get("city"))
                 .state((String) row.get("state"))
                 .pincode((String) row.get("pincode"))
-                .workingHoursOpen((String) row.get("working_hours_open"))
-                .workingHoursClose((String) row.get("working_hours_close"))
+                .workingHoursMonday((String) row.get("working_hours_monday_to_friday"))
+                .workingHoursSaturday((String) row.get("working_hours_saturday"))
+                .workingHoursSunday((String) row.get("working_hours_sunday"))
                 .aboutContent((String) row.get("about_content"))
                 .mapLat((Double) row.get("map_lat"))
                 .mapLon((Double) row.get("map_lon"))

@@ -53,11 +53,7 @@ public class JwtTokenProvider {
      */
     public String getUserIdFromJWT(String token) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().verifyWith((javax.crypto.SecretKey) key).build().parseSignedClaims(token).getPayload();
         
         return claims.getSubject();
     }
@@ -67,11 +63,7 @@ public class JwtTokenProvider {
      */
     public String getEmailFromJWT(String token) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().verifyWith((javax.crypto.SecretKey) key).build().parseSignedClaims(token).getPayload();
         
         return claims.get("email", String.class);
     }
@@ -81,11 +73,7 @@ public class JwtTokenProvider {
      */
     public boolean isAdmin(String token) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().verifyWith((javax.crypto.SecretKey) key).build().parseSignedClaims(token).getPayload();
         
         return claims.get("admin", Boolean.class);
     }
@@ -96,10 +84,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parser().verifyWith((javax.crypto.SecretKey) key).build().parseSignedClaims(token);
             return true;
         } catch (SecurityException ex) {
             logger.error("Invalid JWT signature: {}", ex.getMessage());

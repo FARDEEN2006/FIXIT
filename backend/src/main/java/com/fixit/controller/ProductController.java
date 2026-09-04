@@ -6,7 +6,6 @@ import com.fixit.dto.ProductDetailResponse;
 import com.fixit.dto.ProductListResponse;
 import com.fixit.dto.ProductImageUploadResponse;
 import com.fixit.dto.ApiResponse;
-import com.fixit.dto.ApiErrorResponse;
 import com.fixit.service.ProductService;
 import com.fixit.util.ImageCompressionUtil;
 import jakarta.validation.Valid;
@@ -24,20 +23,24 @@ import java.util.List;
 
 /**
  * Product Controller
- * 
- * Handles product-related endpoints:
- * - GET  /api/products                 (public - list all active)
- * - GET  /api/products/{id}            (public - single product details)
- * - POST /api/admin/products           (admin - create product)
- * - PUT  /api/admin/products/{id}      (admin - update product)
- * - DELETE /api/admin/products/{id}    (admin - delete product)
- * - POST /api/admin/products/{id}/image (admin - upload product image)
+ *
+ * Public:
+ * GET /api/products
+ * GET /api/products/{id}
+ *
+ * Admin:
+ * GET    /api/products/admin
+ * POST   /api/products/admin
+ * PUT    /api/products/admin/{id}
+ * DELETE /api/products/admin/{id}
+ * POST   /api/products/admin/{id}/image
  */
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;
@@ -46,187 +49,505 @@ public class ProductController {
     private ImageCompressionUtil imageCompressionUtil;
 
     /**
-     * Get all active products
-     * GET /api/products
-     * Query params: page=0, pageSize=10
+     * PUBLIC:
+     * Get all active products.
      */
     @GetMapping
     public ResponseEntity<ApiResponse<ProductListResponse>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
+
         try {
-            logger.info("Fetching all products - page: {}, pageSize: {}", page, pageSize);
-            
-            List<ProductResponse> products = productService.getAllActiveProducts(page, pageSize);
-            
-            ProductListResponse response = new ProductListResponse();
+
+            logger.info(
+                    "Fetching active products - page: {}, pageSize: {}",
+                    page,
+                    pageSize
+            );
+
+            List<ProductResponse> products =
+                    productService.getAllActiveProducts(
+                            page,
+                            pageSize
+                    );
+
+            ProductListResponse response =
+                    new ProductListResponse();
+
             response.setPage(page);
             response.setPageSize(pageSize);
-            response.setTotalCount((long) products.size());
-            response.setProducts(products);
-            
-            return ResponseEntity.ok(
-                new ApiResponse<>(true, "Products fetched successfully", response)
+            response.setTotalCount(
+                    (long) products.size()
             );
+            response.setProducts(products);
+
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "Products fetched successfully",
+                            response
+                    )
+            );
+
         } catch (Exception e) {
-            logger.error("Error fetching products: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error fetching products", null));
+
+            logger.error(
+                    "Error fetching products: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error fetching products",
+                                    null
+                            )
+                    );
         }
     }
 
     /**
-     * Get product by ID
-     * GET /api/products/{id}
+     * ADMIN:
+     * Get ALL products.
+     *
+     * Includes both ACTIVE and INACTIVE products.
+     */
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<ProductListResponse>>
+    getAllProductsForAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int pageSize) {
+
+        try {
+
+            logger.info(
+                    "Admin fetching all products - page: {}, pageSize: {}",
+                    page,
+                    pageSize
+            );
+
+            List<ProductResponse> products =
+                    productService.getAllProductsForAdmin(
+                            page,
+                            pageSize
+                    );
+
+            ProductListResponse response =
+                    new ProductListResponse();
+
+            response.setPage(page);
+            response.setPageSize(pageSize);
+            response.setTotalCount(
+                    (long) products.size()
+            );
+            response.setProducts(products);
+
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "All products fetched successfully",
+                            response
+                    )
+            );
+
+        } catch (Exception e) {
+
+            logger.error(
+                    "Error fetching admin products: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error fetching admin products",
+                                    null
+                            )
+                    );
+        }
+    }
+
+    /**
+     * PUBLIC:
+     * Get product by ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductDetailResponse>> getProductById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<ProductDetailResponse>>
+    getProductById(
+            @PathVariable String id) {
+
         try {
-            logger.info("Fetching product: {}", id);
-            
-            ProductDetailResponse product = productService.getProductById(id);
-            
-            if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse<>(false, "Product not found", null));
-            }
-            
-            return ResponseEntity.ok(
-                new ApiResponse<>(true, "Product fetched successfully", product)
+
+            logger.info(
+                    "Fetching product: {}",
+                    id
             );
+
+            ProductDetailResponse product =
+                    productService.getProductById(id);
+
+            if (product == null) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponse<>(
+                                        false,
+                                        "Product not found",
+                                        null
+                                )
+                        );
+            }
+
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "Product fetched successfully",
+                            product
+                    )
+            );
+
         } catch (Exception e) {
-            logger.error("Error fetching product: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error fetching product", null));
+
+            logger.error(
+                    "Error fetching product: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error fetching product",
+                                    null
+                            )
+                    );
         }
     }
 
     /**
-     * Create new product (Admin only)
-     * POST /api/admin/products
+     * ADMIN:
+     * Create product.
      */
     @PostMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>>
+    createProduct(
+            @Valid @RequestBody ProductRequest request) {
+
         try {
-            logger.info("Creating product: {}", request.getName());
-            
-            ProductResponse product = productService.createProduct(request);
-            
+
+            logger.info(
+                    "Creating product: {}",
+                    request.getName()
+            );
+
+            ProductResponse product =
+                    productService.createProduct(request);
+
             if (product == null) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(false, "Failed to create product", null));
+
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(
+                                new ApiResponse<>(
+                                        false,
+                                        "Failed to create product",
+                                        null
+                                )
+                        );
             }
-            
-            return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "Product created successfully", product));
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(
+                            new ApiResponse<>(
+                                    true,
+                                    "Product created successfully",
+                                    product
+                            )
+                    );
+
         } catch (IllegalArgumentException e) {
-            logger.warn("Invalid product data: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, e.getMessage(), null));
+
+            logger.warn(
+                    "Invalid product data: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    e.getMessage(),
+                                    null
+                            )
+                    );
+
         } catch (Exception e) {
-            logger.error("Error creating product: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error creating product", null));
+
+            logger.error(
+                    "Error creating product: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error creating product",
+                                    null
+                            )
+                    );
         }
     }
 
     /**
-     * Update product (Admin only)
-     * PUT /api/admin/products/{id}
+     * ADMIN:
+     * Update product.
      */
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
+    public ResponseEntity<ApiResponse<ProductResponse>>
+    updateProduct(
             @PathVariable String id,
             @Valid @RequestBody ProductRequest request) {
+
         try {
-            logger.info("Updating product: {}", id);
-            
-            ProductResponse product = productService.updateProduct(id, request);
-            
-            if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse<>(false, "Product not found", null));
-            }
-            
-            return ResponseEntity.ok(
-                new ApiResponse<>(true, "Product updated successfully", product)
+
+            logger.info(
+                    "Updating product: {}",
+                    id
             );
+
+            ProductResponse product =
+                    productService.updateProduct(
+                            id,
+                            request
+                    );
+
+            if (product == null) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponse<>(
+                                        false,
+                                        "Product not found",
+                                        null
+                                )
+                        );
+            }
+
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "Product updated successfully",
+                            product
+                    )
+            );
+
         } catch (IllegalArgumentException e) {
-            logger.warn("Invalid product data: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, e.getMessage(), null));
+
+            logger.warn(
+                    "Invalid product data: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    e.getMessage(),
+                                    null
+                            )
+                    );
+
         } catch (Exception e) {
-            logger.error("Error updating product: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error updating product", null));
+
+            logger.error(
+                    "Error updating product: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error updating product",
+                                    null
+                            )
+                    );
         }
     }
 
     /**
-     * Delete product (Admin only)
-     * DELETE /api/admin/products/{id}
+     * ADMIN:
+     * Deactivate product.
      */
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>>
+    deleteProduct(
+            @PathVariable String id) {
+
         try {
-            logger.info("Deleting product: {}", id);
-            
-            boolean deleted = productService.deleteProduct(id);
-            
-            if (!deleted) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse<>(false, "Product not found", null));
-            }
-            
-            return ResponseEntity.ok(
-                new ApiResponse<>(true, "Product deleted successfully", null)
+
+            logger.info(
+                    "Deactivating product: {}",
+                    id
             );
+
+            boolean deleted =
+                    productService.deleteProduct(id);
+
+            if (!deleted) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(
+                                new ApiResponse<>(
+                                        false,
+                                        "Product not found",
+                                        null
+                                )
+                        );
+            }
+
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "Product deactivated successfully",
+                            null
+                    )
+            );
+
         } catch (Exception e) {
-            logger.error("Error deleting product: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error deleting product", null));
+
+            logger.error(
+                    "Error deactivating product: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error deactivating product",
+                                    null
+                            )
+                    );
         }
     }
 
     /**
-     * Upload product image (Admin only)
-     * POST /api/admin/products/{id}/image
+     * ADMIN:
+     * Upload product image.
      */
     @PostMapping("/admin/{id}/image")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ProductImageUploadResponse>> uploadProductImage(
+    public ResponseEntity<ApiResponse<ProductImageUploadResponse>>
+    uploadProductImage(
             @PathVariable String id,
             @RequestParam("image") MultipartFile imageFile) {
+
         try {
-            logger.info("Uploading image for product: {}", id);
-            
-            // Validate image
-            imageCompressionUtil.validateImage(imageFile);
-            
-            String imageUrl = productService.uploadProductImage(id, imageFile);
-            
-            ProductImageUploadResponse response = new ProductImageUploadResponse();
+
+            logger.info(
+                    "Uploading image for product: {}",
+                    id
+            );
+
+            imageCompressionUtil.validateImage(
+                    imageFile
+            );
+
+            String imageUrl =
+                    productService.uploadProductImage(
+                            id,
+                            imageFile
+                    );
+
+            ProductImageUploadResponse response =
+                    new ProductImageUploadResponse();
+
             response.setProductId(id);
             response.setImageUrl(imageUrl);
-            response.setMessage("Image uploaded successfully");
-            
-            return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "Image uploaded successfully", response));
+            response.setMessage(
+                    "Image uploaded successfully"
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(
+                            new ApiResponse<>(
+                                    true,
+                                    "Image uploaded successfully",
+                                    response
+                            )
+                    );
+
         } catch (IllegalArgumentException e) {
-            logger.warn("Invalid image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, e.getMessage(), null));
+
+            logger.warn(
+                    "Invalid image: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    e.getMessage(),
+                                    null
+                            )
+                    );
+
         } catch (IOException e) {
-            logger.error("IO error uploading image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error processing image", null));
+
+            logger.error(
+                    "IO error uploading image: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error processing image",
+                                    null
+                            )
+                    );
+
         } catch (Exception e) {
-            logger.error("Error uploading image: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(false, "Error uploading image", null));
+
+            logger.error(
+                    "Error uploading image: {}",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse<>(
+                                    false,
+                                    "Error uploading image",
+                                    null
+                            )
+                    );
         }
     }
 }

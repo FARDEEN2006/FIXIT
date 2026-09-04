@@ -12,44 +12,50 @@ import SellYourMobile from "./pages/SellYourMobile";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminLogin from "./pages/AdminLogin";
-import VerifyEmail from "./pages/VerifyEmail";
+
+import AdminLayout from "./components/admin/AdminLayout";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 function PlaceholderPage({ title }) {
   return (
-    <main
-      style={{
-        minHeight: "70vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "80px 20px",
-        textAlign: "center",
-      }}
-    >
-      <div>
-        <p
-          style={{
-            color: "#00AAAA",
-            fontWeight: 700,
-            marginBottom: "10px",
-          }}
-        >
-          FIXIT MOBILE SALES & SERVICES
-        </p>
+    <>
+      <Navbar />
 
-        <h1
-          style={{
-            color: "#1B263B",
-            marginBottom: "15px",
-          }}
-        >
-          {title}
-        </h1>
+      <main
+        style={{
+          minHeight: "70vh",
+          display: "grid",
+          placeItems: "center",
+          padding: "80px 20px",
+          textAlign: "center",
+        }}
+      >
+        <div>
+          <p
+            style={{
+              color: "#00AAAA",
+              fontWeight: 700,
+              marginBottom: "10px",
+            }}
+          >
+            FIXIT MOBILE SALES & SERVICES
+          </p>
 
-        <p>
-          This section will be built in the next frontend block.
-        </p>
-      </div>
-    </main>
+          <h1
+            style={{
+              color: "#1B263B",
+              marginBottom: "15px",
+            }}
+          >
+            {title}
+          </h1>
+
+          <p>This page could not be found.</p>
+        </div>
+      </main>
+
+      <Footer />
+    </>
   );
 }
 
@@ -58,58 +64,106 @@ function App() {
     <>
       <ScrollToTop />
 
-      <Navbar />
-
       <Routes>
-        {/* HOME */}
+        {/* =========================
+            PUBLIC PAGES
+        ========================== */}
+
         <Route
           path="/"
-          element={<Home />}
+          element={
+            <>
+              <Navbar />
+              <Home />
+              <Footer />
+            </>
+          }
         />
 
-        {/* PRODUCTS */}
         <Route
           path="/products"
-          element={<Products />}
+          element={
+            <>
+              <Navbar />
+              <Products />
+              <Footer />
+            </>
+          }
         />
 
-        {/* PRODUCT DETAILS */}
         <Route
           path="/products/:id"
-          element={<ProductDetails />}
-        />
-
-        {/* SELL YOUR MOBILE */}
-        <Route path="/sell-your-mobile" element={<SellYourMobile />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-
-        {/* ABOUT */}
-        <Route path="/about" element={<About />} />
-
-        {/* CONTACT */}
-        <Route path="/contact" element={<Contact />} />
-
-        {/* ADMIN LOGIN */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-
-        {/* ADMIN DASHBOARD */}
-        <Route
-          path="/admin"
           element={
-            <PlaceholderPage title="Admin Dashboard" />
+            <>
+              <Navbar />
+              <ProductDetails />
+              <Footer />
+            </>
           }
         />
 
-        {/* FALLBACK */}
+        <Route
+          path="/sell-your-mobile"
+          element={
+            <>
+              <Navbar />
+              <SellYourMobile />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/about"
+          element={
+            <>
+              <Navbar />
+              <About />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <>
+              <Navbar />
+              <Contact />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* =========================
+            ADMIN LOGIN
+        ========================== */}
+
+        <Route
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
+
+        {/* =========================
+            PROTECTED ADMIN DASHBOARD
+        ========================== */}
+
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/admin"
+            element={<AdminLayout />}
+          />
+        </Route>
+
+        {/* =========================
+            404
+        ========================== */}
+
         <Route
           path="*"
-          element={
-            <PlaceholderPage title="Page Not Found" />
-          }
+          element={<PlaceholderPage title="Page Not Found" />}
         />
       </Routes>
-
-      <Footer />
     </>
   );
 }
