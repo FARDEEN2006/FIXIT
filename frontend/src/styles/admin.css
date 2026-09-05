@@ -202,6 +202,18 @@
   padding: 32px;
 }
 
+.admin-listing-modal-grid {
+  min-width: 0;
+}
+
+.admin-listing-image-grid {
+  min-width: 0;
+}
+
+.admin-listing-image-card {
+  min-width: 0;
+}
+
 .admin-page-heading,
 .admin-manager-heading {
   display: flex;
@@ -534,6 +546,24 @@
 
   .admin-content {
     padding: 20px 15px;
+  }
+
+  .admin-listing-modal {
+    padding: 20px !important;
+    width: min(100%, 560px) !important;
+  }
+
+  .admin-listing-modal-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 24px !important;
+  }
+
+  .admin-listing-image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-listing-image-card {
+    min-height: 130px;
   }
 
   .admin-page-heading,

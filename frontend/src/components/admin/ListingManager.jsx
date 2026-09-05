@@ -491,8 +491,10 @@ const ListingManager = () => {
               boxShadow:
                 "0 24px 70px rgba(0,0,0,0.22)",
             }}
+            className="admin-listing-modal"
           >
             <div
+              className="admin-listing-modal-grid"
               style={{
                 display: "flex",
                 justifyContent:
@@ -551,6 +553,7 @@ const ListingManager = () => {
             </div>
 
             <div
+              className="admin-listing-image-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns:
@@ -560,6 +563,7 @@ const ListingManager = () => {
             >
               <div>
                 <h3
+                  className="admin-listing-image-card"
                   style={{
                     margin:
                       "0 0 14px",
@@ -617,7 +621,7 @@ const ListingManager = () => {
                               height:
                                 "100%",
                               objectFit:
-                                "cover",
+                                "contain",
                               display:
                                 "block",
                             }}
