@@ -46,32 +46,6 @@ function Footer() {
               advanced motherboard-level service.
             </p>
 
-            <div className="fixit-footer-socials">
-
-              <a
-                href="https://wa.me/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-              >
-                <MessageCircle size={19} />
-              </a>
-
-              <a
-                href="tel:"
-                aria-label="Call FIXIT"
-              >
-                <Phone size={19} />
-              </a>
-
-              <a
-                href="mailto:"
-                aria-label="Email FIXIT"
-              >
-                <Mail size={19} />
-              </a>
-
-            </div>
           </div>
 
           {/* Quick links */}
@@ -125,25 +99,38 @@ function Footer() {
 
             <h3>Contact</h3>
 
-            <div className="fixit-footer-contact-item">
+            <a className="fixit-footer-contact-item" href="tel:+918870783647">
               <Phone size={18} />
-              <span>Phone</span>
-            </div>
+              <span>Phone: 8870783647</span>
+            </a>
 
-            <div className="fixit-footer-contact-item">
+            <a
+              className="fixit-footer-contact-item"
+              href="https://wa.me/918870783647"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <MessageCircle size={18} />
-              <span>WhatsApp</span>
-            </div>
+              <span>WhatsApp: 8870783647</span>
+            </a>
 
-            <div className="fixit-footer-contact-item">
+            <a
+              className="fixit-footer-contact-item"
+              href="mailto:fixitmobileservicess@gmail.com"
+            >
               <Mail size={18} />
-              <span>Email</span>
-            </div>
+              <span>Email: fixitmobileservicess@gmail.com</span>
+            </a>
 
-            <div className="fixit-footer-contact-item">
+            <a
+              className="fixit-footer-contact-item"
+              href="https://www.google.com/maps/search/?api=1&query=Ground+Floor%2C+Shop+No.+7+%26+34%2C+Perris+Plaza%2C+Municipality+Building%2C+Anna+Salai+%28Backside+of+the+Bus+Stand%29%2C+Karur%2C+Tamil+Nadu+-+639001"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <MapPin size={18} />
-              <span>Store Location</span>
-            </div>
+              <span>Store Location: Ground Floor, Shop No. 7 &amp; 34, Perris Plaza, Municipality Building, Anna Salai (Backside of the Bus Stand), Karur, Tamil Nadu - 639001</span>
+            </a>
 
           </div>
 

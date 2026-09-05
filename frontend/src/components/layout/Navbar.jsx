@@ -116,7 +116,7 @@ function Navbar() {
         <div className="fixit-navbar-actions">
 
           <a
-            href="tel:"
+            href="tel:+918870783647"
             className="fixit-nav-icon-button"
             aria-label="Call FIXIT"
           >
@@ -124,7 +124,7 @@ function Navbar() {
           </a>
 
           <a
-            href="https://wa.me/"
+            href="https://wa.me/918870783647"
             target="_blank"
             rel="noopener noreferrer"
             className="fixit-nav-whatsapp"
@@ -182,13 +182,13 @@ function Navbar() {
         </nav>
 
         <div className="fixit-mobile-actions">
-          <a href="tel:" className="fixit-mobile-call">
+          <a href="tel:+918870783647" className="fixit-mobile-call">
             <Phone size={18} />
             Call FIXIT
           </a>
 
           <a
-            href="https://wa.me/"
+            href="https://wa.me/918870783647"
             target="_blank"
             rel="noopener noreferrer"
             className="fixit-mobile-whatsapp"

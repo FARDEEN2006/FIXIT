@@ -4,12 +4,18 @@ import Hero from "../components/home/Hero";
 import SellMobileCTA from "../components/home/SellMobileCTA";
 import WhyChooseUs from "../components/home/WhyChooseUs";
 import StoreInfoSection from "../components/home/StoreInfoSection";
+import SEO from "../components/common/SEO";
 
 import "../styles/home.css";
 
 function Home() {
   return (
     <main className="fixit-home">
+      <SEO
+        title="Fixit Karur | Mobile Sales & Service"
+        path="/"
+        description="FIXIT Karur is your local mobile shop for phone sales, mobile repair, and trusted mobile services."
+      />
       <Hero />
 
       <SellMobileCTA />

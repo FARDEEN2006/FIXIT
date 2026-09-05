@@ -34,10 +34,10 @@ public class ImageCompressionUtil {
     @Value("${image.max-file-size:5242880}") // 5MB default
     private long maxFileSize;
 
-    @Value("${image.allowed-extensions:jpg,jpeg,png,webp}")
+    @Value("${image.allowed-extensions:jpg,jpeg,jfif,png,webp}")
     private String allowedExtensions;
 
-    @Value("${image.allowed-mime-types:image/jpeg,image/png,image/webp}")
+    @Value("${image.allowed-mime-types:image/jpeg,image/jfif,image/png,image/webp}")
     private String allowedMimeTypes;
 
     @Value("${image.compression-quality:80}")
@@ -71,23 +71,29 @@ public class ImageCompressionUtil {
             );
         }
 
-        // Check MIME type
+        // Accept image MIME types broadly; ImageIO below verifies that the
+        // uploaded content is a format the compression pipeline can decode.
         String contentType = file.getContentType();
-        if (!isAllowedMimeType(contentType)) {
+        if (contentType != null
+                && !contentType.toLowerCase().startsWith("image/")) {
             throw new IllegalArgumentException(
                     String.format("File type not supported: %s", contentType)
             );
         }
 
-        // Check file extension
-        String filename = file.getOriginalFilename();
-        String extension = getFileExtension(filename);
-        if (!isAllowedExtension(extension)) {
+        try (InputStream inputStream = file.getInputStream()) {
+            if (ImageIO.read(inputStream) == null) {
+                throw new IllegalArgumentException(
+                        "Unsupported or invalid image format"
+                );
+            }
+        } catch (IOException e) {
             throw new IllegalArgumentException(
-                    String.format("File extension not supported: .%s", extension)
+                    "Unable to read image file"
             );
         }
 
+        String filename = file.getOriginalFilename();
         logger.info("Image validation passed: {} ({})", filename, contentType);
     }
 

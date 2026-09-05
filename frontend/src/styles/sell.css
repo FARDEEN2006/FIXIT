@@ -1,7 +1,8 @@
- .fixit-sell-form { max-width: 760px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 28px; background: #fff; border: 1px solid #dfe7eb; border-radius: 18px; }
+ .fixit-sell-form { max-width: 760px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 28px; background: #fff; border: 1px solid #dfe7eb; border-radius: 18px; }
  .fixit-sell-form label { display: grid; gap: 7px; color: #1B263B; font-weight: 700; }
  .fixit-sell-form input, .fixit-sell-form select, .fixit-sell-form textarea { width: 100%; padding: 11px 12px; border: 1px solid #b7c6cc; border-radius: 9px; background: #fff; }
  .fixit-sell-form textarea { min-height: 130px; resize: vertical; }
+ .fixit-sell-form textarea::placeholder { color: red; opacity: 1; }
  .fixit-sell-full, .fixit-sell-form button, .fixit-sell-form h1, .fixit-sell-form p { grid-column: 1 / -1; }
  .fixit-form-success { color: #087a55; font-weight: 600; }
  @media (max-width: 640px) { .fixit-sell-form { grid-template-columns: 1fr; padding: 18px; } }

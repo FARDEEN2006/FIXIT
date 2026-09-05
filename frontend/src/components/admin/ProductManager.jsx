@@ -27,7 +27,12 @@ const ProductManager = () => {
       setLoading(true);
       setError("");
 
-      const response = await fetch(`${API_BASE_URL}/api/products`);
+      const response = await fetch(
+        `${API_BASE_URL}/api/products/admin`,
+        {
+          headers: authHeaders,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load products");
@@ -372,13 +377,13 @@ const ProductManager = () => {
               <input
                 type="file"
                 name="image"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/*"
                 onChange={handleChange}
                 disabled={saving}
               />
 
               <small>
-                Maximum 1 image. JPG, PNG or WebP.
+                Maximum 1 image.                 Any supported image format, including JFIF.
               </small>
             </label>
           </div>

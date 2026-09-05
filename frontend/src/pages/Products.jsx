@@ -6,6 +6,7 @@ import ProductGrid from "../components/products/ProductGrid";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 import { getProducts } from "../services/api";
+import SEO from "../components/common/SEO";
 
 import "../styles/products.css";
 
@@ -53,6 +54,11 @@ function Products() {
 
   return (
     <main className="fixit-products-page">
+      <SEO
+        title="Mobile Products for Sale in Karur"
+        path="/products"
+        description="Shop mobile products from FIXIT Mobile Sales & Services in Karur."
+      />
       <ProductHero />
 
       <section className="section fixit-products-list-section">

@@ -1,0 +1,61 @@
+.fixit-contact-page address {
+  margin-top: 24px;
+  font-style: normal;
+}
+
+.fixit-contact-page address p {
+  margin: 12px 0;
+}
+
+.fixit-contact-page address a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fixit-contact-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.fixit-contact-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid #dfe7eb;
+  border-radius: 50%;
+  color: #1b263b;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(27, 38, 59, 0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease, color 180ms ease;
+}
+
+.fixit-contact-actions a:hover,
+.fixit-contact-actions a:focus-visible {
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 12px 24px rgba(0, 170, 170, 0.24);
+}
+
+.fixit-contact-actions a:nth-child(1) { color: #2563eb; }
+.fixit-contact-actions a:nth-child(2) { color: #16a34a; }
+.fixit-contact-actions a:nth-child(3) { color: #e1306c; }
+.fixit-contact-actions a:nth-child(4) { color: #ff0000; }
+
+.fixit-contact-page address {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .fixit-contact-actions {
+    gap: 10px;
+  }
+
+  .fixit-contact-actions a {
+    width: 50px;
+    height: 50px;
+  }
+}
