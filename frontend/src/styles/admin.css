@@ -178,6 +178,18 @@
   color: #4a6b7c;
 }
 
+.admin-header-logout {
+  display: none;
+  border: 1px solid rgba(27, 38, 59, 0.2);
+  border-radius: 7px;
+  background: #ffffff;
+  color: #1b263b;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .admin-menu-button {
   display: none;
   border: 0;
@@ -514,6 +526,10 @@
 
   .admin-header-brand {
     display: none;
+  }
+
+  .admin-header-logout {
+    display: block;
   }
 
   .admin-content {

@@ -33,6 +33,8 @@ const AdminSidebar = ({
   };
 
   const handleLogout = () => {
+    sessionStorage.removeItem("fixit_admin_token");
+    sessionStorage.removeItem("fixit_admin_user");
     localStorage.removeItem("fixit_admin_token");
     localStorage.removeItem("fixit_admin_user");
 

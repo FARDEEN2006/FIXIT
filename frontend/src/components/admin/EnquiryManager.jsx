@@ -6,7 +6,7 @@ const EnquiryManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const token = localStorage.getItem("fixit_admin_token");
+  const token = sessionStorage.getItem("fixit_admin_token");
 
   const fetchEnquiries = async () => {
     try {

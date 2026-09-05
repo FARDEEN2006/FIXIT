@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminHeader = ({ setSidebarOpen, activeSection }) => {
+  const navigate = useNavigate();
   const titles = {
     dashboard: "Dashboard",
     products: "Products",
@@ -31,6 +33,19 @@ const AdminHeader = ({ setSidebarOpen, activeSection }) => {
         <span>FIXIT</span>
         <small>THE REPAIR COMPANY</small>
       </div>
+
+      <button
+        className="admin-header-logout"
+        onClick={() => {
+          sessionStorage.removeItem("fixit_admin_token");
+          sessionStorage.removeItem("fixit_admin_user");
+          localStorage.removeItem("fixit_admin_token");
+          localStorage.removeItem("fixit_admin_user");
+          navigate("/admin/login");
+        }}
+      >
+        Logout
+      </button>
     </header>
   );
 };

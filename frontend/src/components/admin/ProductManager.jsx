@@ -16,7 +16,7 @@ const ProductManager = () => {
     image: null,
   });
 
-  const token = localStorage.getItem("fixit_admin_token");
+  const token = sessionStorage.getItem("fixit_admin_token");
 
   const authHeaders = {
     Authorization: `Bearer ${token}`,

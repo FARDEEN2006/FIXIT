@@ -8,7 +8,7 @@ const ListingManager = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
 
-  const token = localStorage.getItem("fixit_admin_token");
+  const token = sessionStorage.getItem("fixit_admin_token");
 
   const fetchListings = async () => {
     try {
