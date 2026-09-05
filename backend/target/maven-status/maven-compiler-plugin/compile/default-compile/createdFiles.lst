@@ -19,6 +19,7 @@ com\fixit\dto\SecondHandListingRequest.class
 com\fixit\service\StoreService.class
 com\fixit\dto\AuthErrorResponse.class
 com\fixit\controller\AdminController.class
+com\fixit\controller\ProductController.class
 com\fixit\dto\SecondHandListingRequest$SecondHandListingRequestBuilder.class
 com\fixit\FixitBackendApplication.class
 com\fixit\exception\GlobalExceptionHandler.class
@@ -51,6 +52,7 @@ com\fixit\dto\ProductDetailResponse.class
 com\fixit\dto\SecondHandListingListResponse.class
 com\fixit\config\RestClientConfig.class
 com\fixit\dto\ProductResponse.class
+com\fixit\service\ProductService.class
 com\fixit\dto\ServiceResponse$ServiceResponseBuilder.class
 com\fixit\dto\ApiErrorResponse$ApiErrorResponseBuilder.class
 com\fixit\dto\AuthErrorResponse$AuthErrorResponseBuilder.class
@@ -63,6 +65,7 @@ com\fixit\service\StorageService.class
 com\fixit\dto\StoreInformationRequest.class
 com\fixit\dto\ApiErrorResponse.class
 com\fixit\dto\ProductRequest$ProductRequestBuilder.class
+com\fixit\config\SecurityConfig.class
 com\fixit\dto\AuthLoginResponse$AuthLoginResponseBuilder.class
 com\fixit\service\SupabaseService.class
 com\fixit\service\ServiceService.class
