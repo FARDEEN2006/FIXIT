@@ -12,7 +12,7 @@ function Home() {
   return (
     <main className="fixit-home">
       <SEO
-        title="Fixit Karur | Mobile Sales & Service"
+        title="Mobile Sales & Repair in Karur"
         path="/"
         description="FIXIT Karur is your local mobile shop for phone sales, mobile repair, and trusted mobile services."
       />
