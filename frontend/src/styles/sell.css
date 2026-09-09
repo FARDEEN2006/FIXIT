@@ -13,7 +13,10 @@
  .fixit-camera-button { background: #e8fbfa; color: #087f83; border: 1px solid #72d8d4; }
  .fixit-image-preview-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; grid-column: 1 / -1; }
  .fixit-image-preview-grid figure { margin: 0; overflow: hidden; border: 1px solid #dfe7eb; border-radius: 10px; background: #f8fbfc; }
+ .fixit-image-preview { position: relative; }
  .fixit-image-preview-grid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+ .fixit-remove-image { position: absolute; top: 6px; right: 6px; display: grid; width: 30px; height: 30px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: rgba(27, 38, 59, .85); color: #fff; }
+ .fixit-remove-image:hover { background: #b42318; }
  .fixit-image-preview-grid figcaption { display: grid; gap: 3px; padding: 8px; color: #174a52; font-size: .76rem; }
  .fixit-image-preview-grid figcaption strong { color: #1B263B; }
  .fixit-upload-progress { display: grid; gap: 7px; grid-column: 1 / -1; color: #174a52; }
