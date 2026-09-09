@@ -6,5 +6,7 @@
  .fixit-sell-full, .fixit-sell-form button, .fixit-sell-form h1, .fixit-sell-form p { grid-column: 1 / -1; }
  .fixit-image-upload-tip { display: block; padding: 10px 12px; color: #174a52; background: #e8fbfa; border: 1px solid #72d8d4; border-left: 4px solid #08a9ad; border-radius: 8px; font-size: .92rem; line-height: 1.45; }
  .fixit-image-upload-tip strong { color: #007f83; }
+ .fixit-compress-button { display: inline-block; margin: 6px 0 0 4px; padding: 6px 12px; color: #fff; background: #087f83; border-radius: 6px; font-size: .8rem; font-weight: 800; letter-spacing: .04em; text-decoration: none; }
+ .fixit-compress-button:hover { background: #055b5e; }
  .fixit-form-success { color: #087a55; font-weight: 600; }
  @media (max-width: 640px) { .fixit-sell-form { grid-template-columns: 1fr; padding: 18px; } }
