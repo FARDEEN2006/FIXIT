@@ -62,6 +62,14 @@ public class SecondHandListingService {
             SecondHandListingRequest request,
             List<MultipartFile> images
     ) throws IOException {
+        return createListing(request, images, false);
+    }
+
+    public SecondHandListingResponse createListing(
+            SecondHandListingRequest request,
+            List<MultipartFile> images,
+            boolean clientCompressed
+    ) throws IOException {
 
         logger.info(
                 "Creating second-hand listing request for: {}",
@@ -139,7 +147,8 @@ public class SecondHandListingService {
                             addImage(
                                     listingId,
                                     images.get(index),
-                                    index == 0
+                                    index == 0,
+                                    clientCompressed
                             )
                     );
                 }
@@ -172,7 +181,8 @@ public class SecondHandListingService {
     public SecondHandImageResponse addImage(
             String listingId,
             MultipartFile imageFile,
-            boolean isThumbnail
+            boolean isThumbnail,
+            boolean clientCompressed
     ) throws IOException {
 
         logger.info(
@@ -204,10 +214,10 @@ public class SecondHandListingService {
             );
         }
 
-        byte[] compressedImage =
-                imageCompressionUtil.compressImage(
-                        imageFile
-                );
+        imageCompressionUtil.validateImage(imageFile);
+        byte[] compressedImage = clientCompressed
+                ? imageFile.getBytes()
+                : imageCompressionUtil.compressImage(imageFile);
 
         String filename =
                 imageCompressionUtil.generateUniqueFilename(
@@ -277,6 +287,14 @@ public class SecondHandListingService {
         throw new RuntimeException(
                 "Failed to upload image"
         );
+    }
+
+    public SecondHandImageResponse addImage(
+            String listingId,
+            MultipartFile imageFile,
+            boolean isThumbnail
+    ) throws IOException {
+        return addImage(listingId, imageFile, isThumbnail, false);
     }
 
     /**

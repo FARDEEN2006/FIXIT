@@ -144,7 +144,7 @@ export async function getStoreInfo() {
  * Backend:
  * POST /api/sell/listings
  */
-export async function createSecondHandListing(values, images) {
+export async function createSecondHandListing(values, images, onProgress) {
   const body = new FormData();
 
   Object.entries(values).forEach(([key, value]) => {
@@ -155,9 +155,40 @@ export async function createSecondHandListing(values, images) {
     body.append("images", image);
   });
 
-  return apiRequest("/api/sell/listings", {
-    method: "POST",
-    body,
+  if (!onProgress) {
+    return apiRequest("/api/sell/listings", {
+      method: "POST",
+      body,
+      headers: { "X-Client-Compressed": "true" },
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("POST", `${API_BASE_URL}/api/sell/listings`);
+    request.setRequestHeader("X-Client-Compressed", "true");
+    request.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
+    });
+    request.addEventListener("load", () => {
+      let data = null;
+      try {
+        data = request.getResponseHeader("content-type")?.includes("application/json")
+          ? JSON.parse(request.responseText)
+          : request.responseText;
+      } catch {
+        reject(new Error("The server returned an invalid response."));
+        return;
+      }
+      if (request.status < 200 || request.status >= 300) {
+        reject(new Error(typeof data === "object" && data?.message ? data.message : `Request failed with status ${request.status}`));
+        return;
+      }
+      resolve(data);
+    });
+    request.addEventListener("error", () => reject(new Error("Network error while uploading photos.")));
+    request.addEventListener("abort", () => reject(new Error("Photo upload was cancelled.")));
+    request.send(body);
   });
 }
 

@@ -52,12 +52,13 @@ public class SecondHandController {
             @RequestParam("sellerName") String sellerName, @RequestParam("sellerPhone") String sellerPhone,
             @RequestParam(value = "sellerEmail", required = false) String sellerEmail, @RequestParam("productName") String productName,
             @RequestParam("condition") String condition, @RequestParam("detailedDescription") String detailedDescription,
-            @RequestParam("expectedPrice") java.math.BigDecimal expectedPrice, @RequestParam("images") List<MultipartFile> images) {
+            @RequestParam("expectedPrice") java.math.BigDecimal expectedPrice, @RequestParam("images") List<MultipartFile> images,
+            @RequestHeader(value = "X-Client-Compressed", defaultValue = "false") boolean clientCompressed) {
         try {
             if (images.isEmpty() || images.size() > 4) throw new IllegalArgumentException("Provide between 1 and 4 images");
             for (MultipartFile image : images) imageCompressionUtil.validateImage(image);
             SecondHandListingRequest request = SecondHandListingRequest.builder().sellerName(sellerName).sellerPhone(sellerPhone).sellerEmail(sellerEmail).productName(productName).condition(condition).detailedDescription(detailedDescription).expectedPrice(expectedPrice).build();
-            SecondHandListingResponse result = listingService.createListing(request, images);
+            SecondHandListingResponse result = listingService.createListing(request, images, clientCompressed);
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true, "Listing submitted successfully", result));
         } catch (IllegalArgumentException e) {

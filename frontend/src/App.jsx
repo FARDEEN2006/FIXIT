@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -59,10 +60,37 @@ function PlaceholderPage({ title }) {
   );
 }
 
+function BackButton() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const goBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className="fixit-back-button"
+      onClick={goBack}
+      aria-label={`Go back from ${location.pathname}`}
+      title="Go back"
+    >
+      <ArrowLeft size={20} aria-hidden="true" />
+      <span>Back</span>
+    </button>
+  );
+}
+
 function App() {
   return (
     <>
       <ScrollToTop />
+      <BackButton />
 
       <Routes>
         {/* =========================
