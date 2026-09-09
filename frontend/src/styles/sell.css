@@ -7,6 +7,10 @@
  .fixit-image-upload-tip { display: block; padding: 10px 12px; color: #174a52; background: #e8fbfa; border: 1px solid #72d8d4; border-left: 4px solid #08a9ad; border-radius: 8px; font-size: .92rem; line-height: 1.45; }
  .fixit-image-upload-tip strong { color: #007f83; }
  .fixit-photo-button { justify-self: start; }
+ .fixit-sell-full > input[type="file"] { display: none; }
+ .fixit-photo-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+ .fixit-photo-actions button { display: inline-flex; align-items: center; gap: 7px; }
+ .fixit-camera-button { background: #e8fbfa; color: #087f83; border: 1px solid #72d8d4; }
  .fixit-image-preview-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; grid-column: 1 / -1; }
  .fixit-image-preview-grid figure { margin: 0; overflow: hidden; border: 1px solid #dfe7eb; border-radius: 10px; background: #f8fbfc; }
  .fixit-image-preview-grid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Camera, Image as ImageIcon } from "lucide-react";
 import { createSecondHandListing } from "../services/api";
 import "../styles/sell.css";
 import SEO from "../components/common/SEO";
@@ -63,28 +64,28 @@ export default function SellYourMobile() {
   const [images, setImages] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [photoStatuses, setPhotoStatuses] = useState([]);
-  const fileInput = useRef(null);
+  const galleryInput = useRef(null);
+  const cameraInput = useRef(null);
 
   const selectImages = async (event) => {
     const selected = Array.from(event.target.files || []);
     event.target.value = "";
     if (!selected.length) return;
-    if (selected.length > MAX_IMAGES) {
-      images.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
-      setImages([]); setPhotoStatuses([]); setError("A maximum of 4 images is allowed."); return;
+    if (images.length + selected.length > MAX_IMAGES) {
+      setError(`You can select up to ${MAX_IMAGES} photos. ${MAX_IMAGES - images.length} slot(s) remaining.`);
+      return;
     }
     setError(""); setMessage("");
     try {
-      images.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
       const optimized = await Promise.all(selected.map(async (file) => ({
         file: await compressImage(file),
         originalSize: file.size,
       })));
-      setImages(optimized.map((image) => ({ ...image, previewUrl: URL.createObjectURL(image.file) })));
-      setPhotoStatuses(optimized.map(() => "pending"));
+      const prepared = optimized.map((image) => ({ ...image, previewUrl: URL.createObjectURL(image.file) }));
+      setImages((currentImages) => [...currentImages, ...prepared]);
+      setPhotoStatuses((currentStatuses) => [...currentStatuses, ...prepared.map(() => "pending")]);
     } catch (err) {
-      images.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
-      setImages([]); setPhotoStatuses([]); setError(err.message || "We could not optimize the selected photos. Please try again.");
+      setError(err.message || "We could not optimize the selected photos. Please try again.");
     }
   };
 
@@ -117,7 +118,7 @@ export default function SellYourMobile() {
       {[['sellerName','Your name','text'],['sellerPhone','Phone number','tel'],['sellerEmail','Email address (optional)','email'],['productName','Mobile / product name','text'],['expectedPrice','Expected price','number']].map(([name,label,type]) => <label key={name}>{label}<input required={name !== 'sellerEmail'} name={name} type={type} min={type === 'number' ? '1' : undefined} value={form[name]} onChange={e=>setForm({...form,[name]:e.target.value})}/></label>)}
       <label>Condition<select required value={form.condition} onChange={e=>setForm({...form,condition:e.target.value})}><option value="">Select condition</option><option value="NEW">New (With Warranty)</option><option value="GOOD">Good (No Damage)</option><option value="FAIR">Fair (With Damage But Working Condition)</option><option value="POOR">Poor (Damage + No Working Condition)</option></select></label>
       <label className="fixit-sell-full">Detailed description<textarea required minLength="20" maxLength="2000" value={form.detailedDescription} onChange={e=>setForm({...form,detailedDescription:e.target.value})} placeholder="Tell us about the device, storage, accessories, faults or repairs." /></label>
-      <label className="fixit-sell-full">Device photos (1–4)<span className="fixit-image-upload-tip" role="note">Photos are optimized securely in your browser before upload. Select up to 4 photos from your gallery or use your camera.</span><input ref={fileInput} required={!images.length} type="file" accept="image/*" capture="environment" multiple onChange={selectImages}/><button type="button" className="fixit-button fixit-photo-button" onClick={() => fileInput.current?.click()} disabled={saving}>{images.length ? "Change Photos" : "Upload Photos"}</button><small>MOBILES: FRONT, BACK, TOP, BOTTOM</small><small>JPG, JPEG, JFIF, PNG and WebP supported.</small><small>{images.length} selected; the first is the main image.</small></label>
+      <label className="fixit-sell-full">Device photos (1–4)<span className="fixit-image-upload-tip" role="note">Photos are optimized securely in your browser before upload. Choose up to 4 photos from your gallery or take photos with your camera.</span><input ref={galleryInput} type="file" accept="image/*" multiple onChange={selectImages} /><input ref={cameraInput} type="file" accept="image/*" capture="environment" onChange={selectImages} /><div className="fixit-photo-actions"><button type="button" className="fixit-button fixit-photo-button" onClick={() => galleryInput.current?.click()} disabled={saving || images.length >= MAX_IMAGES}><ImageIcon size={18} aria-hidden="true" />Upload Photos</button><button type="button" className="fixit-button fixit-camera-button" onClick={() => cameraInput.current?.click()} disabled={saving || images.length >= MAX_IMAGES} aria-label="Take photo with camera" title="Take photo with camera"><Camera size={20} aria-hidden="true" /></button></div><small>MOBILES: FRONT, BACK, TOP, BOTTOM</small><small>JPG, JPEG, JFIF, PNG and WebP supported.</small><small>{images.length} selected; the first is the main image.</small></label>
       {images.length > 0 && <div className="fixit-image-preview-grid">{images.map(({ file, originalSize, previewUrl }, index) => <figure key={`${file.name}-${index}`}><img src={previewUrl} alt={`Selected mobile photo ${index + 1}`} /><figcaption><strong>Photo {index + 1}</strong><span>Original: {formatSize(originalSize)}</span><span>Optimized: {formatSize(file.size)}</span>{saving && <span>{photoStatuses[index] === "done" ? "✓ Uploaded" : photoStatuses[index] === "uploading" ? "⏳ Uploading" : "○ Waiting"}</span>}</figcaption></figure>)}</div>}
       {error && <p className="fixit-form-error" role="alert">{error}</p>}{message && <p className="fixit-form-success" role="status">{message}</p>}
       {saving && <div className="fixit-upload-progress" role="status"><div className="fixit-upload-progress-label"><span>Uploading photos…</span><strong>{uploadProgress}%</strong></div><progress value={uploadProgress} max="100" /><small>Please don't close this page.</small></div>}

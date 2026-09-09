@@ -81,7 +81,6 @@ function BackButton() {
       title="Go back"
     >
       <ArrowLeft size={20} aria-hidden="true" />
-      <span>Back</span>
     </button>
   );
 }

@@ -35,10 +35,11 @@ select {
   top: 92px;
   left: 18px;
   z-index: 1000;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-background);
@@ -221,9 +222,10 @@ p {
 
 @media (max-width: 768px) {
   .fixit-back-button {
-    top: 78px;
-    left: 12px;
-    padding: 7px 10px;
+    top: 76px;
+    left: 10px;
+    width: 36px;
+    height: 36px;
   }
 
   .section {
